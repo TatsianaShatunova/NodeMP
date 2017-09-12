@@ -1,2 +1,7 @@
-global.User = require("./user").User;
-global.Product = require("./product").Product;
+const User = require("./user");
+const Product = require("./product");
+
+module.exports = {
+    User: User,
+    Product: Product
+}

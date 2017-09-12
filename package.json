@@ -1,7 +1,7 @@
 {
-  "name": "test_npm_init",
+  "name":"node_mp",
   "version": "1.0.0",
-  "description": "test package",
+  "description": "node examples package",
   "main": "index.js",
   "dependencies": {
     "babel": "^6.23.0",
