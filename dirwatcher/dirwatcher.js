@@ -5,11 +5,9 @@ class Dirwatcher {
         console.log("Dirwatcher Module");
     }
 
-   async function watch(path, delay){
+    async watch(path, delay) {
 
     }
-
-   
 }
 
 module.exports = Dirwatcher;
