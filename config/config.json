@@ -1,3 +1,4 @@
 {
-  "appName": "NodeMP HW App"
+  "appName": "NodeMP HW App",
+  "directoryToWatch": "data"
 }
