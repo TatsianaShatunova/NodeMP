@@ -1,7 +1,7 @@
-const DirWatcher = require("./dir-watcher");
+const dirWatcher = require("./dir-watcher");
 const importer = require("./importer");
 
 module.exports = {
-    DirWatcher: DirWatcher,
+    dirWatcher: dirWatcher,
     importer: importer
 }

@@ -12,7 +12,8 @@ new models.User();
 new models.Product();
 
 
-var watcher = new services.DirWatcher();
+var watcher = new services.dirWatcher();
+var listener = new services.importer(watcher);
 watcher.watch(config.directoryToWatch, 10);
 
 
