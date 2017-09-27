@@ -47,7 +47,7 @@ class Importer {
                         onError(err);
                         return;
                       }
-                      fs.writeFile(this._directory + filename, content, function(err) {
+                    fs.writeFile(this._directory + filename, JSON.stringify(content), 'utf8', function(err) {
                         if(err) {
                             return console.log(`start files import from ${err}`);
                         }
