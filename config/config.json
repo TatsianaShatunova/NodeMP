@@ -1,4 +1,5 @@
 {
   "appName": "NodeMP HW App",
-  "directoryToWatch": "data"
+  "directoryToWatch": "data",
+  "directoryToImport": "importedData"
 }
