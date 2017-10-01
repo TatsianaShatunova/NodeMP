@@ -9,29 +9,27 @@ const EventEmitter = require('events');
  *      1) our providers can only add files (they cannot rename/edit/delete)
  *      2) all files have '*.csv' extension
  */
-class DirWatcher extends EventEmitter {
+class DirWatcher{
     _watcher;
     _newFiles;
     _interval;
     _path;
+    changedEmitter;
 
     constructor() {
         console.log("DirWatcher Module");
-        super();
-        this._newFiles = [];    
+        this._newFiles = [];  
+        this.changedEmitter = new EventEmitter();  
     }
 
-    // this should not be async
     watch(path, delay) {
-        const that = this; // why do I do this?
+        const that = this; 
         this._path = path;
 
         console.log(`start watch: ${path}`);
 
-        // throw exception if the folder does not exists
         this.checkDirectoryExistence(path);
 
-        // throw exception if this.watcher is already running
         if (this.watcher) {
             throw Error("Watcher is already running");
         }
@@ -56,10 +54,9 @@ class DirWatcher extends EventEmitter {
 
         function detectChanges() {
             // emit event is changes are detected and clean up this.filesToSync
-            // below I use 'that' instead of 'this' - why?
             if (that._newFiles.length) {
                 console.log(`new files: ${that._newFiles.join(' ,')}`);
-                that.emit('changed', that._path);
+                that.changedEmitter.emit('dirwatcher:changed', that._newFiles);
                 that._newFiles = [];
             }
         }

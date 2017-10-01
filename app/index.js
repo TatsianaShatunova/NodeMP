@@ -13,7 +13,7 @@ new models.Product();
 
 
 var watcher = new services.dirWatcher();
-var listener = new services.importer(watcher, config.directoryToImport);
+var listener = new services.importer(watcher.changedEmitter, config.directoryToImport);
 watcher.watch(config.directoryToWatch, 10);
 
 
