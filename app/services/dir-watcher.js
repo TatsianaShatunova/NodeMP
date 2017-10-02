@@ -44,7 +44,7 @@ class DirWatcher{
             
             // handle only *.csv files
             if (event === 'rename' && pt.extname(filename) == '.csv') {
-                this._newFiles.push(filename);
+                this._newFiles.push(`${path}/${filename}`);
             }
         });
 
