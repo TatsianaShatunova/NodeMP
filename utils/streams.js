@@ -3,6 +3,7 @@
     const fs = require('fs');
     const through = require('through2');
     const replaceExt = require('replace-ext');
+    const request = require('request');
 
     var args = parseArgs(process.argv.slice(2), {
         boolean: ['help'],
@@ -116,7 +117,12 @@
     }
 
     function cssBundler(_path){
-        
+
+        request('https://www.epam.com/etc/clientlibs/foundation/main.min.fc69c13add6eae57cd247a91c7e26a15.css', function (error, response, body) {
+            console.log('error:', error); 
+            console.log('statusCode:', response && response.statusCode); 
+            console.log('body:', body); 
+          });
     }
 
 
