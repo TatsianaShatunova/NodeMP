@@ -118,10 +118,16 @@ function writeJson(filePath) {
 
 // node utils\streams -a=bundle-css -path=assets/css
 function cssBundler(_path) {
-    // TODO: 1. add _path parameter validation:  2) folder exists
+
     if(_path == ""){
         throw Error("bundleFilesPath parameter can't be empty!");
     }
+    fs.stat(_path, function (err, stats) {
+        if (err && err.errno === 34) {
+            throw Error("Directory doesn't exist");
+        } 
+    });
+    
     const bundleFilePath = 'assets/bundle.css';
     fs.readdir(_path, (err, files) => {
         files = files || [];
@@ -143,10 +149,6 @@ function cssBundler(_path) {
             res.pipe(writer);
         })
     }
-
-    // module.exports = {
-    //     streamsActions: streamsActions
-    //   }
 
     module.exports.streamsActions = streamsActions
 
