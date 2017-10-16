@@ -18,15 +18,15 @@ var args = parseArgs(process.argv.slice(2), {
     }
 });
 
-console.dir(args);
-
-if (process.argv.length < 2) {
-    console.log('Wrong input!');
-    printHelp();
-} else if (process.argv[2] && process.argv[2].startsWith('-h')) {
-    printHelp();
-} else {
-    streamsActions(args._file, args._action, args._path);
+if (process.argv && process.argv.length && process.argv[0] !== 'node') {
+    if (process.argv.length < 2) {
+        console.log('Wrong input!');
+        printHelp();
+    } else if (process.argv[2] && process.argv[2].startsWith('-h')) {
+        printHelp();
+    } else {
+        streamsActions(args.file, args.action, args.path);
+    }
 }
 
 function streamsActions(filePath, action, bundleFilesPath) {
@@ -51,7 +51,7 @@ function streamsActions(filePath, action, bundleFilesPath) {
             cssBundler(bundleFilesPath);
             break;
         default:
-        throw Error("Unknown parameter!");
+            throw Error("Unknown parameter!");
     }
 }
 
@@ -119,15 +119,15 @@ function writeJson(filePath) {
 // node utils\streams -a=bundle-css -path=assets/css
 function cssBundler(_path) {
 
-    if(_path == ""){
+    if (_path == "") {
         throw Error("bundleFilesPath parameter can't be empty!");
     }
     fs.stat(_path, function (err, stats) {
         if (err && err.errno === 34) {
             throw Error("Directory doesn't exist");
-        } 
+        }
     });
-    
+
     const bundleFilePath = 'assets/bundle.css';
     fs.readdir(_path, (err, files) => {
         files = files || [];
@@ -149,10 +149,9 @@ function cssBundler(_path) {
             res.pipe(writer);
         })
     }
-
-    module.exports.streamsActions = streamsActions
-
 }
+
+module.exports.streamsActions = streamsActions;
 
 
 

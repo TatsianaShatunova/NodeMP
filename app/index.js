@@ -16,7 +16,7 @@ new models.Product();
 var watcher = new services.dirWatcher();
 var listener = new services.importer(watcher.changedEmitter, config.directoryToImport);
 watcher.watch(config.directoryToWatch, 10);
-streams.streamsActions("data.MOCK_DATA.csv", "io", "assets/bundle.css");
+streams.streamsActions('data/MOCK_DATA.csv', 'io', 'assets/bundle.css');
 
 
 
