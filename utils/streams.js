@@ -1,4 +1,4 @@
-
+'use strict';
 const parseArgs = require('minimist');
 const fs = require('fs');
 const through = require('through2');
@@ -10,7 +10,6 @@ var args = parseArgs(process.argv.slice(2), {
     boolean: ['help'],
     string: ['file', 'action', 'path'],
     alias: { help: ['h'], file: ['f'], action: ['a'], path: ['p'] },
-    //default: {'help': true},
     unknown: (arg) => {
         if (arg !== 'help' && arg !== 'h' && arg !== 'file' && arg !== 'f' && arg !== 'action' && arg != 'a' && arg != 'path' && arf != 'p') {
             console.error('Unknown argument', arg);
@@ -20,60 +19,47 @@ var args = parseArgs(process.argv.slice(2), {
 });
 
 console.dir(args);
-// chooseAction(args); -- you should not execute an action prior you validate arguments
 
-// I moved 'wrong input' from printHelp.
-// printHelp should be responsible only for help printing
 if (process.argv.length < 2) {
     console.log('Wrong input!');
     printHelp();
 } else if (process.argv[2] && process.argv[2].startsWith('-h')) {
     printHelp();
 } else {
-    chooseAction(args);
+    streamsActions(args._file, args._action, args._path);
 }
 
-function chooseAction(args) {
+function streamsActions(filePath, action, bundleFilesPath) {
 
-    // is there any reason to create these local variables below?
-    var _help = args.help;
-    var _file = args.file;
-    var _action = args.action;
-    var _path = args.path;
+    console.log(`\r\n Action = ${action}`);
+    console.log(`\r\n File = ${filePath}`);
 
-    console.log(`\r\n Action = ${_action}`);
-    console.log(`\r\n File = ${_file}`);
-
-    switch (_action) {
+    switch (action) {
         case 'io':
-            inputOutput(_file);
+            inputOutput(filePath);
             break;
         case 'transformToApper':
             transformToApper();
             break;
         case 'transformToJson':
-            transformToJson(_file);
+            transformToJson(filePath);
             break;
         case 'writeJson':
-            writeJson(_file);
+            writeJson(filePath);
             break;
         case 'bundle-css':
-            cssBundler(_path);
+            cssBundler(bundleFilesPath);
             break;
-        // add: default: throw...
+        default:
+        throw Error("Unknown parameter!");
     }
 }
 
 function printHelp() {
-    // if (process.argv.slice(2).length == 0) {
-    //     console.log('Wrong input!');
-    // }
-    console.log("-h, --help  Shows application usage message \r\n-a, --action: Action  Action to be called \r\n-f, --file: File   File to be used ");
-    // instead of \r\n you can use real linebreaks in string templates:
     console.log(
         `-h, --help  Shows application usage message
-        -a, --action: Action  Action to be called
-        -f, --file: File   File to be used`
+         -a, --action: Action  Action to be called
+         -f, --file: File   File to be used`
     );
 }
 
@@ -104,11 +90,6 @@ function transformToJson(filePath) {
     console.log('\r\n File transformation to json');
     const reader = fs.createReadStream(filePath);
 
-    //  const toJson = through ((chunk, enc, cb) => {      
-    //     cb(null, new Buffer(JSON.stringify(chunk))); 
-    //   });
-
-    //   reader.pipe(toJson).pipe(process.stdout);
     var write = function (buffer, encoding, next) {
         var data = buffer.toString();
         this.push(JSON.stringify(data));
@@ -137,8 +118,10 @@ function writeJson(filePath) {
 
 // node utils\streams -a=bundle-css -path=assets/css
 function cssBundler(_path) {
-    // TODO: 1. add _path parameter validation: 1) not empty and 2) folder exists
-
+    // TODO: 1. add _path parameter validation:  2) folder exists
+    if(_path == ""){
+        throw Error("bundleFilesPath parameter can't be empty!");
+    }
     const bundleFilePath = 'assets/bundle.css';
     fs.readdir(_path, (err, files) => {
         files = files || [];
@@ -160,6 +143,13 @@ function cssBundler(_path) {
             res.pipe(writer);
         })
     }
+
+    // module.exports = {
+    //     streamsActions: streamsActions
+    //   }
+
+    module.exports.streamsActions = streamsActions
+
 }
 
 
