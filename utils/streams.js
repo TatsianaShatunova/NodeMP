@@ -18,7 +18,8 @@ var args = parseArgs(process.argv.slice(2), {
     }
 });
 
-if (process.argv && process.argv.length && process.argv[0] !== 'node') {
+if (module.parent == null) {
+    
     if (process.argv.length < 2) {
         console.log('Wrong input!');
         printHelp();
