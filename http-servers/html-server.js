@@ -16,6 +16,6 @@ require('http')
     res.write(formatet);
 
     fs.createReadStream('index.html', 'utf-8').pipe(res);
-   // res.end(formatet)
+    res.end()
 })
 .listen(3000);
