@@ -1,13 +1,12 @@
 'use strict';
 
 class Product {
-
-    _id;
-    _name;
-    _brand;
-    _company;
-    _price;
-    _isbn;
+    // _id;
+    // _name;
+    // _brand;
+    // _company;
+    // _price;
+    // _isbn;
 
     constructor(id = null, name = null, brand = 'def', company = null, price = null, isbn = null) {
         this._id = id;

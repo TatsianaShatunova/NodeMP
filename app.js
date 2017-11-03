@@ -2,7 +2,14 @@
 
 const express = require('express');
 const app = express();
+const router = express.Router();
+
 app.use(express.json());
 
 
-module.exports = app;
+//module.exports = app;
+
+module.exports = {
+    app: app,
+    router: router
+}
