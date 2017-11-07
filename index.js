@@ -5,27 +5,41 @@ const cookieParser = require('cookie-parser')
 const fs = require('fs');
 const csv = require('parse-csv');
 const models = require('./app/models');
-const app = require("./app");
+const app = require("./app").app;
+const router = require("./app").router;
 
 const port = process.env.PORT || 3000;
 
-app.app.listen(port, () => console.log(`App listening on port ${port}!`))
-app.app.use(cookieParser());
+app.listen(port, () => console.log(`App listening on port ${port}!`));
 
-app.app.get('/', function (req, res) {
+// here is the middleware pipeline
+app
+    .use((req, res, next) => {
+        // emulate cookie
+        req.headers.cookie = 'field1=4355232654;field2=654376575;field3=KYUFQEFFBQ'
+        next();
+    })
+    .use(cookieParser())
+    // example with an in-line handler
+    .use((req, res, next) => {
+        // TODO: here you should replce [req.cookies] on [req.parsedCookies]
+        next();
+    })
+    // example with a stand-alone handler 
+    .use(setParsedQuery)
+    .use('/', router);
 
-    // req.app.locals.parsedCookies = req.cookies;
-    res.json({ parsedCookies: req.cookies })
+
+function setParsedQuery(req, res, next) {
+    // TODO: here you should set [req.parsedQuery]
     next();
-})
+}
 
-app.app.get('/', function (req, res) {
-
-    //req.app.locals.parsedCookies = req.body;
+router.get('/', function (req, res) {
     res.json({ parsedQuery: req.body })
 })
 
-app.router.get('/api/products', function (req, res) {
+router.get('/api/products', function (req, res) {
 
     var products = [];
     var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
@@ -40,7 +54,7 @@ app.router.get('/api/products', function (req, res) {
     next();
 });
 
-app.router.get('/api/products/:id', function (req, res) {
+router.get('/api/products/:id', function (req, res) {
 
     var product;
     console.log(req.params.id);
@@ -57,14 +71,14 @@ app.router.get('/api/products/:id', function (req, res) {
     next();
 });
 
-app.router.get('/api/products/:id/reviews', function (req, res) {
+router.get('/api/products/:id/reviews', function (req, res) {
 
     // res.write(JSON.stringify());
     res.end('Dont know where to get reviews!!!');
     next();
 });
 
-app.router.post('/api/products', function (req, res) {
+router.post('/api/products', function (req, res) {
 
     // res.write(JSON.stringify());
     res.end();
@@ -77,22 +91,22 @@ const users = [{
     brand: 'Supreme',
     price: 99.99,
     options: [
-    { color: 'blue' },
-    { size: 'XL' }
+        { color: 'blue' },
+        { size: 'XL' }
     ]
-   },
-   {
+},
+{
     id: 2,
     name: 'Supreme',
     brand: 'Supreme',
     price: 87,
     options: [
-    { color: 'blue' },
-    { size: 'XL' }
+        { color: 'blue' },
+        { size: 'XL' }
     ]
-   }]
+}]
 
-app.router.get('/api/users', function (req, res) {
+router.get('/api/users', function (req, res) {
 
     var result = [];
     users.forEach((o) => {
@@ -103,6 +117,3 @@ app.router.get('/api/users', function (req, res) {
     res.write(JSON.stringify(result));
     res.end();
 });
-
-
-app.app.use('/', app.router);
