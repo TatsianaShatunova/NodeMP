@@ -11,6 +11,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "http-server": "^0.10.0",
+    "jsonwebtoken": "^8.1.0",
     "minimist": "^1.2.0",
     "npm": "^5.4.2",
     "parse-csv": "^0.2.0",
