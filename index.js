@@ -45,24 +45,34 @@ const login = "testLogin";
 const password = "testPassword";
 
 router.post('/api/auth', function(req, res){
-    console.log(req.parsedQuery);
-    console.log(req.body.login);
   if(req.body.login !== login || req.body.password !== password){
       res.status(404).send({code: 404, message: 'Not Found'});
   }else{
     var tkn = jwt.sign({
         sub: login,
         isActive: true 
-      }, 'sign', { expiresIn: '60' });
+      }, 'sign', { expiresIn: '1h' });
       res.send({code: 202, message: 'OK', data: {user: {username: login}}, token: tkn});
   }
 });
 
 function checkToken(req, res, next){
-    let tkn = req.headers['x-access-token']
+    let tkn = req.headers['x-access-token'];
+
+    if(tkn){
+        jwt.verify(tkn, 'sign', function(err, decoded){
+            if(err){
+                res.json({code: 404, message: 'Failed to authenticate token!'});
+            }else{
+                next();
+            }
+        })
+    }else{
+        res.status(404).send({code: 404, message: 'Not token provided!'});
+    }
 }
 
-router.get('/api/products', function (req, res) {
+router.get('/api/products', checkToken, function (req, res) {
 
     console.log(req.parsedCookies);
     var products = [];
@@ -130,7 +140,7 @@ const users = [{
     ]
 }]
 
-router.get('/api/users', function (req, res) {
+router.get('/api/users', checkToken, function (req, res) {
 
     var result = [];
     users.forEach((o) => {
