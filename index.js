@@ -23,6 +23,7 @@ app
     // example with an in-line handler
     .use((req, res, next) => {
         // TODO: here you should replce [req.cookies] on [req.parsedCookies]
+        req.parsedCookies = req.cookies;
         next();
     })
     // example with a stand-alone handler 
@@ -32,15 +33,17 @@ app
 
 function setParsedQuery(req, res, next) {
     // TODO: here you should set [req.parsedQuery]
+    req.parsedQuery = req.body;
     next();
 }
 
-router.get('/', function (req, res) {
-    res.json({ parsedQuery: req.body })
-})
+// router.get('/', function (req, res) {
+//     res.json({ parsedQuery: req.body })
+// })
 
 router.get('/api/products', function (req, res) {
 
+    console.log(req.parsedCookies);
     var products = [];
     var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
     var obj = csv.toJSON(fileContent, { headers: { included: true } });
@@ -51,7 +54,7 @@ router.get('/api/products', function (req, res) {
 
     res.write(JSON.stringify(products));
     res.end();
-    next();
+    //next();
 });
 
 router.get('/api/products/:id', function (req, res) {

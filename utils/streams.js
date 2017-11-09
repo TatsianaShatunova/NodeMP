@@ -45,7 +45,7 @@ function streamsActions(filePath, action, bundleFilesPath) {
         case 'transformToJson':
             transformToJson(filePath);
             break;
-        case 'writeJson':
+        case '':
             writeJson(filePath);
             break;
         case 'bundle-css':
