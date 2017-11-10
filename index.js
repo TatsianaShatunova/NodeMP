@@ -9,6 +9,8 @@ const app = require("./app").app;
 const router = require("./app").router;
 const passport = require('passport');
 const strategy = require('passport-local').Strategy;
+const autConf = require('./config/auth');
+const facebookStrategy = require('passport-facebook').Strategy;
 
 const port = process.env.PORT || 3000;
 
@@ -54,33 +56,50 @@ const localTokens = [{
     token: '56g2-67fd-f543'    
 }]
 
-passport.use(new strategy({
-    usernameField: "login",
-    passwordField: "password"
-}, function (username, password, done) {
-    console.log(username);
-    if (username !== login || password !== password) {
-        done(null, false, 'Incorrect login or password');
-    } else {
-        done(null, { code: 200, message: 'OK', data: { user: { username: login } } })
-    }
-}
-));
+// passport.use(new strategy({
+//     usernameField: "login",
+//     passwordField: "password"
+// }, function (username, password, done) {
+//     if (username !== login || password !== password) {
+//         done(null, false, 'Incorrect login or password');
+//     } else {
+//         done(null, { code: 200, message: 'OK', data: { user: { username: login } } })
+//     }
+// }
+// ));
 
-router.post('/api/authenticate', passport.authenticate('local', {session: false}), function(req, res){
-    var tkn = "";
-    localTokens.forEach((o) => {
-        if(o.id == req.body.login){
-            tkn = o.token;
-        }
-    });
-    console.log(tkn);
-    res.json({token: tkn});
+passport.use(new facebookStrategy({
+            clientID        : autConf.facebookAuth.clientID,
+            clientSecret    : autConf.facebookAuth.clientSecret,
+            callbackURL     : autConf.facebookAuth.callbackURL    
+        }, function(accessToken, refreshToken, profile, done) {
+            console.log(profile);
+            if(profile){
+                return done(null, profile);
+            } else{
+                done(null, 'Incorrect login or password');
+            }
+          }       
+        ));
+        
+router.post('/api/facebook', passport.authenticate('facebook', {session: false}), function(req, res){
+    res.json({success});
 });
 
-router.post('/passport', passport.authenticate('local', { session: false }), (req, res) => {
-    res.json("success");
-});
+// router.post('/api/authenticate', passport.authenticate('local', {session: false}), function(req, res){
+//     var tkn = "";
+//     // localTokens.forEach((o) => {
+//     //     if(o.id == req.body.login){
+//     //         tkn = o.token;
+//     //     }
+//     // });
+//     // res.json({token: tkn});
+//     var tkn = jwt.sign({
+//         sub: login,
+//         isActive: true
+//     }, 'sign', { expiresIn: '1h' });
+//     res.json({token: tkn});
+// });
 
 router.post('/api/auth', function (req, res) {
     if (req.body.login !== login || req.body.password !== password) {
@@ -106,13 +125,12 @@ function checkToken(req, res, next) {
             }
         })
     } else {
-        res.status(404).send({ code: 404, message: 'Not token provided!' });
+        res.status(404).send({ code: 404, message: 'No token provided!' });
     }
 }
 
 router.get('/api/products', checkToken, function (req, res) {
-    
-        console.log(req.parsedCookies);
+
         var products = [];
         var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
         var obj = csv.toJSON(fileContent, { headers: { included: true } });
