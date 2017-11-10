@@ -7,6 +7,8 @@ const csv = require('parse-csv');
 const models = require('./app/models');
 const app = require("./app").app;
 const router = require("./app").router;
+const passport = require('passport');
+const strategy = require('passport-local').Strategy;
 
 const port = process.env.PORT || 3000;
 
@@ -37,6 +39,9 @@ function setParsedQuery(req, res, next) {
     next();
 }
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 // router.get('/', function (req, res) {
 //     res.json({ parsedQuery: req.body })
 // })
@@ -44,33 +49,78 @@ function setParsedQuery(req, res, next) {
 const login = "testLogin";
 const password = "testPassword";
 
-router.post('/api/auth', function(req, res){
-  if(req.body.login !== login || req.body.password !== password){
-      res.status(404).send({code: 404, message: 'Not Found'});
-  }else{
-    var tkn = jwt.sign({
-        sub: login,
-        isActive: true 
-      }, 'sign', { expiresIn: '1h' });
-      res.send({code: 202, message: 'OK', data: {user: {username: login}}, token: tkn});
-  }
+const localTokens = [{
+    id: "testLogin",
+    token: '56g2-67fd-f543'    
+}]
+
+passport.use(new strategy({
+    userName: "login",
+    password: "password"
+}, function (username, password, done) {
+    console.log(username);
+    if (username !== login || password !== password) {
+        done(null, false, 'Incorrect login or password');
+    } else {
+        done(null, { code: 200, message: 'OK', data: { user: { username: login } } })
+    }
+}
+));
+
+router.post('/api/authenticate', passport.authenticate('local', {session: false}), function(req, res){
+    var tkn = "";
+    localTokens.forEach((o) => {
+        if(o.id == req.body.login){
+            tkn = o.token;
+        }
+    });
+    console.log(tkn);
+    res.json({token: tkn});
 });
 
-function checkToken(req, res, next){
+router.post('/api/auth', function (req, res) {
+    if (req.body.login !== login || req.body.password !== password) {
+        res.status(404).send({ code: 404, message: 'Not Found' });
+    } else {
+        var tkn = jwt.sign({
+            sub: login,
+            isActive: true
+        }, 'sign', { expiresIn: '1h' });
+        res.send({ code: 202, message: 'OK', data: { user: { username: login } }, token: tkn });
+    }
+});
+
+function checkToken(req, res, next) {
     let tkn = req.headers['x-access-token'];
 
-    if(tkn){
-        jwt.verify(tkn, 'sign', function(err, decoded){
-            if(err){
-                res.json({code: 404, message: 'Failed to authenticate token!'});
-            }else{
+    if (tkn) {
+        jwt.verify(tkn, 'sign', function (err, decoded) {
+            if (err) {
+                res.json({ code: 404, message: 'Failed to authenticate token!' });
+            } else {
                 next();
             }
         })
-    }else{
-        res.status(404).send({code: 404, message: 'Not token provided!'});
+    } else {
+        res.status(404).send({ code: 404, message: 'Not token provided!' });
     }
 }
+
+router.get('/api/products', passport.authenticate('bearer', {session: false}), function (req, res) {
+    
+        console.log(req.parsedCookies);
+        var products = [];
+        var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
+        var obj = csv.toJSON(fileContent, { headers: { included: true } });
+        obj.forEach((o) => {
+            var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
+            products.push(product);
+        });
+    
+        res.write(JSON.stringify(products));
+        res.end();
+        //next();
+    });
 
 router.get('/api/products', checkToken, function (req, res) {
 
