@@ -55,8 +55,8 @@ const localTokens = [{
 }]
 
 passport.use(new strategy({
-    userName: "login",
-    password: "password"
+    usernameField: "login",
+    passwordField: "password"
 }, function (username, password, done) {
     console.log(username);
     if (username !== login || password !== password) {
@@ -76,6 +76,10 @@ router.post('/api/authenticate', passport.authenticate('local', {session: false}
     });
     console.log(tkn);
     res.json({token: tkn});
+});
+
+router.post('/passport', passport.authenticate('local', { session: false }), (req, res) => {
+    res.json("success");
 });
 
 router.post('/api/auth', function (req, res) {
@@ -106,7 +110,7 @@ function checkToken(req, res, next) {
     }
 }
 
-router.get('/api/products', passport.authenticate('bearer', {session: false}), function (req, res) {
+router.get('/api/products', checkToken, function (req, res) {
     
         console.log(req.parsedCookies);
         var products = [];
@@ -122,21 +126,21 @@ router.get('/api/products', passport.authenticate('bearer', {session: false}), f
         //next();
     });
 
-router.get('/api/products', checkToken, function (req, res) {
+// router.get('/api/products', checkToken, function (req, res) {
 
-    console.log(req.parsedCookies);
-    var products = [];
-    var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
-    var obj = csv.toJSON(fileContent, { headers: { included: true } });
-    obj.forEach((o) => {
-        var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
-        products.push(product);
-    });
+//     console.log(req.parsedCookies);
+//     var products = [];
+//     var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
+//     var obj = csv.toJSON(fileContent, { headers: { included: true } });
+//     obj.forEach((o) => {
+//         var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
+//         products.push(product);
+//     });
 
-    res.write(JSON.stringify(products));
-    res.end();
-    //next();
-});
+//     res.write(JSON.stringify(products));
+//     res.end();
+//     //next();
+// });
 
 router.get('/api/products/:id', function (req, res) {
 
@@ -162,12 +166,12 @@ router.get('/api/products/:id/reviews', function (req, res) {
     next();
 });
 
-router.post('/api/products', function (req, res) {
+// router.post('/api/products', function (req, res) {
 
-    // res.write(JSON.stringify());
-    res.end();
-    next();
-});
+//     // res.write(JSON.stringify());
+//     res.end();
+//     next();
+// });
 
 const users = [{
     id: 1,
