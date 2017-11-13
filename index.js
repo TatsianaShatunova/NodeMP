@@ -129,6 +129,21 @@ function checkToken(req, res, next) {
     }
 }
 
+router.get('/api/products', function (req, res) {
+    
+            var products = [];
+            var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
+            var obj = csv.toJSON(fileContent, { headers: { included: true } });
+            obj.forEach((o) => {
+                var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
+                products.push(product);
+            });
+        
+            res.write(JSON.stringify(products));
+            res.end();
+            //next();
+        });
+
 router.get('/api/products', checkToken, function (req, res) {
 
         var products = [];
