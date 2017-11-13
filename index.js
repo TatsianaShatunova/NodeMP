@@ -82,7 +82,7 @@ passport.use(new facebookStrategy({
           }       
         ));
         
-router.post('/api/facebook', passport.authenticate('facebook', {session: false}), function(req, res){
+router.get('/api/facebook', passport.authenticate('facebook', {session: false}), function(req, res){
     res.json({success});
 });
 
