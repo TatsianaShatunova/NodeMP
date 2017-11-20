@@ -2,6 +2,7 @@
 const fs = require('fs');
 const csv = require('parse-csv');
 const models = require('../models');
+const dbModels = require('../../models');
 
 class Importer {
     _changedEmitter;
@@ -54,6 +55,14 @@ class Importer {
         var obj = csv.toJSON(rowProduct, { headers: { included: true } });
         obj.forEach((o) => {
             var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
+
+          var ndbProd = dbModels.Product.create({
+                name: o.name,
+                brand: o.brand,
+                company: o.company,
+                price: o.price
+            });
+
             products.push(product);
         });
         return products;

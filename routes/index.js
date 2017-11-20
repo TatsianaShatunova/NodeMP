@@ -8,6 +8,7 @@ const passport = require('passport');
 const strategy = require('passport-local').Strategy;
 const facebookStrategy = require('passport-facebook').Strategy;
 const middlewwear = require('../middlewares');
+const dbModels = require('../models');
 
 
     // router.get('/', function (req, res) {
@@ -64,12 +65,21 @@ const middlewwear = require('../middlewares');
     router.get('/api/products', function (req, res) {
         
                 var products = [];
-                var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
-                var obj = csv.toJSON(fileContent, { headers: { included: true } });
-                obj.forEach((o) => {
-                    var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
-                    products.push(product);
-                });
+                // var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
+                // var obj = csv.toJSON(fileContent, { headers: { included: true } });
+
+                // obj.forEach((o) => {
+                //     var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
+                //     products.push(product);
+                // });
+
+                dbModels.Product.findAll().then(results => {
+
+                    results.forEach((o) => {
+                    var prod = new models.Product(o.id, o.name, o.brand, o.company, o.price);
+                    products.push(prod);
+                    });
+                  });;
             
                 res.write(JSON.stringify(products));
                 res.end();
@@ -110,18 +120,22 @@ const middlewwear = require('../middlewares');
     router.get('/api/products/:id', function (req, res) {
     
         var product;
-        console.log(req.params.id);
-        var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
-        var obj = csv.toJSON(fileContent, { headers: { included: true } });
-        obj.forEach((o) => {
-            if (o.id == req.params.id) {
-                product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
-            }
-        });
+        // console.log(req.params.id);
+        // var fileContent = fs.readFileSync('data/MOCK_DATA.csv', 'utf-8');
+        // var obj = csv.toJSON(fileContent, { headers: { included: true } });
+        // obj.forEach((o) => {
+        //     if (o.id == req.params.id) {
+        //         product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
+        //     }
+        // });
+
+        dbModels.Product.findById(req.params.id).then(result => {   
+            product = new models.Product(result.id, result.name, result.brand, result.company, result.price);                               
+            //console.log(product);
+        });;
     
         res.write(JSON.stringify(product));
         res.end();
-        next();
     });
     
     router.get('/api/products/:id/reviews', function (req, res) {
