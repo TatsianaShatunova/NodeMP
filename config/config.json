@@ -1,5 +1,9 @@
 {
   "appName": "NodeMP HW App",
   "directoryToWatch": "data",
-  "directoryToImport": "importedData"
+  "directoryToImport": "importedData",
+  "dialect": "postgres",
+  "database": "postgres",
+  "username": "postgres",
+  "password": 1111
 }

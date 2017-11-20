@@ -36,9 +36,6 @@
     app.use(passport.initialize());
     app.use(passport.session());
     
-    // router.get('/', function (req, res) {
-    //     res.json({ parsedQuery: req.body })
-    // })
     
     const login = "testLogin";
     const password = "testPassword";
