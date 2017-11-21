@@ -76,13 +76,13 @@ const dbModels = require('../models');
                 dbModels.Product.findAll().then(results => {
 
                     results.forEach((o) => {
-                    var prod = new models.Product(o.id, o.name, o.brand, o.company, o.price);
+                    var prod = new models.Product(o.dataValues.id, o.dataValues.name, o.dataValues.brand, o.dataValues.company, o.dataValues.price);
                     products.push(prod);
                     });
-                  });;
-            
-                res.write(JSON.stringify(products));
-                res.end();
+
+                    res.write(JSON.stringify(products));
+                    res.end();
+                  });
                 //next();
             });
     
