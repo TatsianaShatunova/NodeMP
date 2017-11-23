@@ -19,22 +19,23 @@ const uniqueValidator = require('mongoose-unique-validator');
 
   //cityModel.collection.remove()
 
-  var brest = new cityModel({name: "Minsk",country: "Belarus",capital: true,location: {lat:74.097621,long: 43.734050}});
-  var minsk = new cityModel({name: "Brest",country: "Belarus",capital: false,location: {lat:84.097621,long: 25.734050}});
-  var vitebsk = new cityModel({name: "Vitebsk",country: "Belarus",capital: false,location: {lat:19.097621,long: 65.734050}});
-  var grodno = new cityModel({name: "Grodno",country: "Belarus",capital: false,location: {lat:10.097621,long: 95.734050}});
-  minsk.save(function(err, res){
-    if(err) return console.log(err);
-  });
-  vitebsk.save(function(err, res){
-    if(err) return console.log(err);
-  });
-  brest.save(function(err, res){
-    if(err) return console.log(err);
-  });
-  grodno.save(function(err, res){
-    if(err) return console.log(err);
-  });
+  //already added to db will raise validation error
+  // var brest = new cityModel({name: "Minsk",country: "Belarus",capital: true,location: {lat:74.097621,long: 43.734050}});
+  // var minsk = new cityModel({name: "Brest",country: "Belarus",capital: false,location: {lat:84.097621,long: 25.734050}});
+  // var vitebsk = new cityModel({name: "Vitebsk",country: "Belarus",capital: false,location: {lat:19.097621,long: 65.734050}});
+  // var grodno = new cityModel({name: "Grodno",country: "Belarus",capital: false,location: {lat:10.097621,long: 95.734050}});
+  // minsk.save(function(err, res){
+  //   if(err) return console.log(err);
+  // });
+  // vitebsk.save(function(err, res){
+  //   if(err) return console.log(err);
+  // });
+  // brest.save(function(err, res){
+  //   if(err) return console.log(err);
+  // });
+  // grodno.save(function(err, res){
+  //   if(err) return console.log(err);
+  // });
 
 
   var productSchema = mongoose.Schema({
