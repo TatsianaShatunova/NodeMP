@@ -12,6 +12,9 @@ const uniqueValidator = require('mongoose-unique-validator');
         lat: {type: Number},
         long: {type: Number} 
       }
+  },
+  {
+    timestamps: true
   });
   city.plugin(uniqueValidator);
 
