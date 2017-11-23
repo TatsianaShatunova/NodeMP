@@ -6,6 +6,8 @@ const router = express.Router();
 
 app.use(express.json());
 
+console.log('start app');
+
 
 module.exports = {
     app: app,

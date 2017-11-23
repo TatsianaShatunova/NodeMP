@@ -3,6 +3,7 @@ const fs = require('fs');
 const csv = require('parse-csv');
 const models = require('../models');
 const dbModels = require('../../models');
+const mongoModels = require('../../mongo/index.js'); 
 
 class Importer {
     _changedEmitter;
@@ -56,12 +57,19 @@ class Importer {
         obj.forEach((o) => {
             var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
 
-          var ndbProd = dbModels.Product.create({
-                name: o.name,
-                brand: o.brand,
-                company: o.company,
-                price: o.price
-            });
+            //For postgres bd
+        //   var ndbProd = dbModels.Product.create({
+        //         name: o.name,
+        //         brand: o.brand,
+        //         company: o.company,
+        //         price: o.price
+        //     });
+
+        //For mongodb       
+        var newProduct = new  mongoModels.modelProduct({name: o.name,brand: o.brand,company: o.company,price: o.price,isbn: o.isbn});
+        newProduct.save(function(err, res){
+          if(err) return console.log(err);
+        });
 
             products.push(product);
         });

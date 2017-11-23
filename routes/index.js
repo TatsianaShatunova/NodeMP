@@ -9,7 +9,46 @@ const strategy = require('passport-local').Strategy;
 const facebookStrategy = require('passport-facebook').Strategy;
 const middlewwear = require('../middlewares');
 const dbModels = require('../models');
+const mongoModels = require('../mongo/index.js'); 
+const random = require("random-js")();
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+//const mongoose = require('mongoose');
 
+// Connection URL
+//const url = 'mongodb://Tatsiana_Shatunova:1111@localhost:27017/admin';
+
+router.get('/api/city', function (req, res) {
+
+     var city = "";
+    // MongoClient.connect(url, function(err, db) {
+     var count = 0;
+
+     //Task 4 homework 7
+    // db.collection("cities").find({}).toArray(function(err, result) {
+    //     if (err) throw err;
+    //     count = result.length;
+    //     var value = random.integer(1, count);
+    //     city = result[value];
+    //     res.write(JSON.stringify(city));
+    //     res.end('');
+    //     db.close();
+    //   });
+   
+    // }); 
+      
+    //Task 6 homework 7
+    mongoModels.modelCity.find(function(err, cities){
+       if(err) return console.log(err);
+       count = cities.length;
+       var value = random.integer(1, count);
+       city = cities[value];
+       //console.log(cities);
+       res.write(JSON.stringify(city))
+    res.end('');
+    });
+
+    });
 
     // router.get('/', function (req, res) {
     //     res.json({ parsedQuery: req.body })

@@ -1,6 +1,6 @@
 
-var fs        = require("fs");
-var path      = require("path");
+var fs = require("fs");
+var path = require("path");
 const Sequelize = require('sequelize');
 const config = require('../config/config');
 const db = {};
