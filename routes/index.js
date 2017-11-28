@@ -38,17 +38,34 @@ router.get('/api/cities/random', function (req, res) {
 
     // }); 
 
+
     //Task 6 homework 7
+    // [review 1] I think we need a service layer here - it is a bad practice to call DAO layer from controllers <<< no need to fix, just for information
+    // [review 2] move to another route, uncomment Task 4
     mongoModels.modelCity.find(function (err, cities) {
         if (err) return console.log(err);
+
+        // [review 3] if an error occurs (err not empty) your code below will fail
+        // [review 4] use https://docs.mongodb.com/manual/reference/operator/aggregation/sample/ to get random document
         count = cities.length;
         var value = random.integer(1, count);
         city = cities[value];
         //console.log(cities);
         res.write(JSON.stringify(city))
         res.end('');
+        // [review 5] two rows above: use res.json(...) + remove res.end('') >>>> just one line: res.json(city)
+        // [review 6] update similar places in other routes in this file
     });
 
+
+    // [review 7] this is an example - please test if aggregate works!
+    mongoModels.modelCity.aggregate([{ $sample: { size: 1 } }], (err, cities) => {
+        if (err) {
+            return res.status(500).json(err)
+        }
+
+        res.json(cities);
+    });
 });
 
 //Homework 7
@@ -74,16 +91,16 @@ router.get('/api/cities/:id', function (req, res) {
 });
 
 router.delete('/api/cities/:id', function (req, res) {
-     
-   mongoModels.modelCity.remove({ _id : req.params.id }, function (err) {
-       if(err !== null){
-        res.write(JSON.stringify(err))
-        res.end('');
-       }
-       res.status(200).send("Deleted");
-});     
-    
+
+    mongoModels.modelCity.remove({ _id: req.params.id }, function (err) {
+        if (err !== null) {
+            res.write(JSON.stringify(err))
+            res.end('');
+        }
+        res.status(200).send("Deleted");
     });
+
+});
 
 //FOR HOMEWORK 7
 router.put('/api/cities/:id', function (req, res) {
