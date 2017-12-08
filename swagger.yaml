@@ -1,0 +1,83 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a sample NodeMP server.  \n"
+  version: "1.0.0"
+  title: "NodeMP"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/TatsianaShatunova/NodeMP/1.0.0"
+tags:
+- name: "products"
+  description: "products"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+schemes:
+- "https"
+- "http"
+paths:
+  /products:
+    get:
+      tags:
+      - "products"
+      summary: "Get all products"
+      description: "Get all products"
+      operationId: "getAllProducts"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        501:
+          description: "Internal server error"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Product:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      brand:
+        type: "string"
+      company:
+        type: "string"
+      price:
+        type: "string"
+    example:
+      price: "price"
+      name: "name"
+      company: "company"
+      id: "id"
+      brand: "brand"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
