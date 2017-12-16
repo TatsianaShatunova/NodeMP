@@ -10,8 +10,8 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/TatsianaShatunova/NodeMP/1.0.0"
+host: "localhost:10010"
+basePath: "/"
 tags:
 - name: "cities"
   description: "Everything about your cities"
@@ -21,24 +21,8 @@ schemes:
 - "https"
 - "http"
 paths:
-  /api/cities/random:
-    get:
-      tags:
-      - "cities"
-      summary: "Returns random city"
-      description: "Returns random city"
-      operationId: "getRandomCity"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/City"
   /api/cities:
+    x-swagger-router-controller: "cities"
     get:
       tags:
       - "cities"
@@ -146,6 +130,24 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "City not found"
+  /api/cities/random:
+    x-swagger-router-controller: "cities"
+    get:
+      tags:
+      - "cities"
+      summary: "Returns random city"
+      description: "Returns random city"
+      operationId: "getRandomCity"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/City"
   /api/products:
     get:
       tags:

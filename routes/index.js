@@ -11,7 +11,6 @@ const middlewwear = require('../middlewares');
 const dbModels = require('../models');
 const mongoModels = require('../mongo/index.js');
 const random = require("random-js")();
-const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 //const mongoose = require('mongoose');
 
@@ -22,7 +21,6 @@ const assert = require('assert');
 router.get('/api/cities/random', function (req, res) {
 
     var city = "";
-    // MongoClient.connect(url, function(err, db) {
     var count = 0;
 
     //Task 4 homework 7
