@@ -8,7 +8,6 @@
     const facebookStrategy = require('passport-facebook').Strategy;
 
     
-    // here is the middleware pipeline
     app
         .use((req, res, next) => {
             // emulate cookie
@@ -16,19 +15,18 @@
             next();
         })
         .use(cookieParser())
-        // example with an in-line handler
+   
         .use((req, res, next) => {
-            // TODO: here you should replce [req.cookies] on [req.parsedCookies]
+           
             req.parsedCookies = req.cookies;
             next();
         })
-        // example with a stand-alone handler 
+
         .use(setParsedQuery)
         .use('/', router);
     
     
     function setParsedQuery(req, res, next) {
-        // TODO: here you should set [req.parsedQuery]
         req.parsedQuery = req.body;
         next();
     }

@@ -57,7 +57,7 @@ class Importer {
         obj.forEach((o) => {
             var product = new models.Product(o.id, o.name, o.brand, o.company, o.price, o.isbn);
 
-            //For postgres bd
+        //For postgres bd
         //   var ndbProd = dbModels.Product.create({
         //         name: o.name,
         //         brand: o.brand,

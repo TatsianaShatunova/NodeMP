@@ -12,10 +12,7 @@ const dbModels = require('../models');
 const mongoModels = require('../mongo/index.js');
 const random = require("random-js")();
 const assert = require('assert');
-//const mongoose = require('mongoose');
 
-// Connection URL
-//const url = 'mongodb://Tatsiana_Shatunova:1111@localhost:27017/admin';
 
 //homework 7
 router.get('/api/cities/random', function (req, res) {
@@ -38,25 +35,17 @@ router.get('/api/cities/random', function (req, res) {
 
 
     //Task 6 homework 7
-    // [review 1] I think we need a service layer here - it is a bad practice to call DAO layer from controllers <<< no need to fix, just for information
-    // [review 2] move to another route, uncomment Task 4
     mongoModels.modelCity.find(function (err, cities) {
         if (err) return console.log(err);
 
-        // [review 3] if an error occurs (err not empty) your code below will fail
-        // [review 4] use https://docs.mongodb.com/manual/reference/operator/aggregation/sample/ to get random document
         count = cities.length;
         var value = random.integer(1, count);
         city = cities[value];
         //console.log(cities);
-        res.write(JSON.stringify(city))
-        res.end('');
-        // [review 5] two rows above: use res.json(...) + remove res.end('') >>>> just one line: res.json(city)
-        // [review 6] update similar places in other routes in this file
+        res.json(city);
     });
 
 
-    // [review 7] this is an example - please test if aggregate works!
     mongoModels.modelCity.aggregate([{ $sample: { size: 1 } }], (err, cities) => {
         if (err) {
             return res.status(500).json(err)
@@ -71,8 +60,7 @@ router.get('/api/cities', function (req, res) {
 
     mongoModels.modelCity.find(function (err, cities) {
         if (err) return console.log(err);
-        res.write(JSON.stringify(cities))
-        res.end('');
+        res.json(cities);
     });
 
 });
@@ -82,8 +70,7 @@ router.get('/api/cities/:id', function (req, res) {
 
     mongoModels.modelCity.findById(req.params.id, function (err, city) {
         if (err) return console.log(err);
-        res.write(JSON.stringify(city))
-        res.end('');
+        res.json(city);
     });
 
 });
@@ -116,7 +103,6 @@ router.put('/api/cities/:id', function (req, res) {
                             res.write(JSON.stringify(err))
                             return res.end('');
                         }
-                        //res.json(resp)
                         res.write(JSON.stringify("Inserted"))
                         res.end('');
                     });
@@ -130,17 +116,14 @@ router.put('/api/cities/:id', function (req, res) {
 
 //FOR HOMEWORK 7
 router.post('/api/cities', function (req, res) {
-    //console.log(req.body.lat);
     var newCity = new mongoModels.modelCity({ name: req.body.name, country: req.body.country, capital: req.body.capital, location: { lat: req.body.location.lat, long: req.body.location.long } });
     newCity.save(function (err, resp) {
         if (err) {
             console.log(err);
-            res.write(JSON.stringify(err))
+            res.json(err);
             return res.end('');
         }
-        //res.json(resp)
-        res.write(JSON.stringify(resp))
-        res.end('');
+        res.json(resp);
     });
 });
 
@@ -222,8 +205,7 @@ router.get('/api/products', function (req, res) {
     //FOR HOMEWORK 7
     mongoModels.modelProduct.find(function (err, products) {
         if (err) return console.log(err);
-        res.write(JSON.stringify(products))
-        res.end('');
+        res.json(products);
     });
 });
 
@@ -237,9 +219,7 @@ router.get('/api/products', checkToken, function (req, res) {
         products.push(product);
     });
 
-    res.write(JSON.stringify(products));
-    res.end();
-    //next();
+    res.json(products);
 });
 
 // router.get('/api/products', checkToken, function (req, res) {
@@ -282,14 +262,12 @@ router.get('/api/products/:id', function (req, res) {
     //FOR HOMEWORK 7
     mongoModels.modelProduct.findById(req.params.id, function (err, product) {
         if (err) return console.log(err);
-        res.write(JSON.stringify(product))
-        res.end('');
+        res.json(product);
     });
 });
 
 router.get('/api/products/:id/reviews', function (req, res) {
 
-    // res.write(JSON.stringify());
     res.end('Dont know where to get reviews!!!');
     next();
 });
@@ -329,9 +307,7 @@ router.get('/api/users', checkToken, function (req, res) {
         var user = new models.User(o.id, o.name, o.brand, o.price);
         result.push(user);
     });
-    // res.write(JSON.stringify());
-    res.write(JSON.stringify(result));
-    res.end();
+    res.json(result);
 });
 
 

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
- //mongoose.connect('mongodb://localhost/my_database');
  mongoose.connect('mongodb://Tatsiana_Shatunova:1111@localhost:27017/admin');
 
  var city = mongoose.Schema({
